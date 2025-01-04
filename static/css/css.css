@@ -1,0 +1,221 @@
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background: black;
+            color: white;
+            min-height: 100vh;
+        }
+        
+        header {
+            position: fixed;
+            width: 100%;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+        }
+        
+        .hero {
+            height: 100vh;
+            position: relative;
+            background: url('/api/placeholder/1920/1080') center/cover;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+        }
+        
+        .hero-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+        }
+        
+        h2 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            margin-bottom: 2rem;
+        }
+        
+        .start-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 2rem;
+            border: 1px solid white;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            letter-spacing: 0.2em;
+            transition: all 0.3s;
+        }
+        
+        .start-btn:hover {
+            background: white;
+            color: black;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5); /* Slight transparency */
+            z-index: 100;
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: 150px; /* Set the maximum height */
+
+            backdrop-filter: blur(10px); /* Apply background blur */
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            backdrop-filter: blur(10px); /* Apply background blur */
+
+            background: rgb(12, 12, 12);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 42rem;
+            margin: 2rem 0;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        /* Loading Indicator */
+        .loading {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 200;
+            backdrop-filter: blur(10px);
+            cursor: default;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .loading video {
+            width: 200px; /* Adjust size as needed */
+            height: auto;
+            margin-bottom: 1rem;
+        }
+        
+        #loading-text {
+            color: white;
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+        }
+        
+
+        /* Form Styling - Fields in Pairs */
+        form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        form > button[type="submit"] {
+            grid-column: span 2; /* Submit button spans both columns */
+            text-align: center;
+        }
+        
+        input, select, button[type="submit"] {
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+        }
+
+       button[type="submit"] {
+            letter-spacing: 0.2em;
+            transition: all 0.3s;
+        }
+        
+        button[type="submit"]:hover {
+            background: white;
+            color: black;
+        }
+
+        /* Dropdown Styling */
+        select {
+            padding: 0.75rem;
+            background: black;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+        max-height: 6rem;   /* Height of the dropdown (adjust to fit 3 rows) */
+        overflow-y: auto;   /* Enable vertical scrolling */
+}
+        
+
+        /* Dropdown focus border */
+        select:focus {
+            border-color: #FFD700; /* Gold border on focus */
+        }
+
+        /* Style dropdown options */
+        select option {
+            background: black;
+            color: white;
+        }
+
+        /* Selected option styling */
+        select option:checked {
+            background: black;
+            color: #FFD700; /* Gold color for selected option text */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            form {
+                grid-template-columns: 1fr;
+            }
+
+            form > button[type="submit"] {
+                grid-column: span 1;
+            }
+
+            h2 {
+                font-size: 2.5rem;
+            }
+        }

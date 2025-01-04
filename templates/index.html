@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRISHNA MOTORS</title>
+    <style>
+        select[name="company"]::-webkit-scrollbar,
+        select[name="model"]::-webkit-scrollbar {
+        width: 8px;
+        }
+        select[name="company"]::-webkit-scrollbar-track,
+        select[name="model"]::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        select[name="company"]::-webkit-scrollbar-thumb,
+        select[name="model"]::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+        .contact-info {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .phone-link {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .phone-link:hover {
+            color: #FFD700;
+        }
+        /* General Reset */
+        
+        .contact-footer {
+            position: absolute;
+            bottom: 2rem;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+        
+        .contact-strip {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            align-items: center;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 4px;
+            margin: 0 auto;
+            width: fit-content;
+        }
+        
+        .address {
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .address:hover {
+            color: #FFD700;
+        }
+        
+        .divider {
+            color: rgba(255, 255, 255, 0.3);
+        }
+        
+       
+
+        @media (max-width: 768px) {
+            .contact-strip {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .divider {
+                display: none;
+            }
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background: black;
+            color: white;
+            min-height: 100vh;
+        }
+        
+        header {
+            position: fixed;
+            width: 100%;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+        }
+        
+        .hero {
+            height: 100vh;
+            position: relative;
+            background: url('/api/placeholder/1920/1080') center/cover;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+        }
+        
+        .hero-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .hero-content {
+              font-size: 0.800rem; /* 14px */
+            }
+          }
+        
+        h2 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            margin-bottom: 2rem;
+        }
+        
+        .start-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 2rem;
+            border: 1px solid white;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            letter-spacing: 0.2em;
+            transition: all 0.3s;
+        }
+        
+        .start-btn:hover {
+            background: white;
+            color: black;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5); /* Slight transparency */
+            z-index: 100;
+            padding: 1.5rem;
+            
+            overflow-y: auto;
+            backdrop-filter: blur(10px); /* Apply background blur */
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            backdrop-filter: blur(10px); /* Apply background blur */
+
+            background: rgb(12, 12, 12);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 42rem;
+            margin: 2rem 0;
+            top:100px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        /* Loading Indicator */
+        @media (max-width: 768px) {
+            .loading {
+                font-size: 1.2rem; /* Adjust font size for mobile view */
+                text-align: center;
+                padding: 1rem;
+            }
+        }
+        
+        .loading {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+            color: white;
+            font-size: 2rem;
+            z-index: 200; /* Above modal */
+            backdrop-filter: blur(10px); /* Apply background blur */
+            cursor: default;
+        }
+
+        /* Form Styling - Fields in Pairs */
+        form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        form > button[type="submit"] {
+            grid-column: span 2; /* Submit button spans both columns */
+            text-align: center;
+        }
+        
+        input, select, button[type="submit"] {
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+
+        }
+
+       button[type="submit"] {
+            letter-spacing: 0.2em;
+            transition: all 0.3s;
+        }
+        
+        button[type="submit"]:hover {
+            background: white;
+            color: black;
+        }
+
+        /* Dropdown Styling */
+        select {
+            padding: 0.75rem;
+            background: black;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+            overflow-y: auto; 
+
+        }
+
+        /* Dropdown focus border */
+        select:focus {
+            border-color: #FFD700; /* Gold border on focus */
+        }
+
+        /* Style dropdown options */
+        select option {
+            background: black;
+            color: white;
+        
+            
+        }
+
+        /* Selected option styling */
+        select option:checked {
+            background: black;
+            color: #FFD700; /* Gold color for selected option text */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            form {
+                grid-template-columns: 1fr;
+            }
+
+            form > button[type="submit"] {
+                grid-column: span 1;
+            }
+
+            h2 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <button class="menu-btn">☰</button>
+            <h1>KRISHNA MOTORS</h1>
+            <div class="spacer"></div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h2>DISCOVER YOUR<br>VEHICLE'S VALUE</h2>
+                <button class="start-btn">
+                    <span>START VALUATION</span>
+                    <span class="arrow">→</span>
+                </button>
+            </div>
+            <div class="contact-footer">
+                <div class="contact-strip">
+                    
+                    <span class="address" onclick="openMap()" style="cursor: pointer;">
+                        KRISHNA MOTORS, VATVA📍 
+                 
+               </span>
+               <span class="divider">|</span>
+               <span class="contact-info">
+                   <span>MANOJBHAI MANGROLIYA</span>
+                   <span><a href="tel:+919825898729" class="phone-link">+91 9825898729</a></span>
+               </span>
+               <span class="divider">|</span>
+               <span class="contact-info">Created by: MANGROLIYA KRISH MANOJBHAI</span>
+                </div>
+            </div>
+        </section>
+        
+        <div class="modal" id="formModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>VEHICLE DETAILS</h4>
+                    <button class="close-btn">✕</button>
+                </div>
+                <form id="valuationForm">
+                    <select name="company" required>
+                        <option value="">Select Brand</option>
+                        <option value="Maruti">Maruti</option>
+                        <option value="Hyundai">Hyundai</option>
+                        <option value="Honda">Honda</option>
+                        <option value="Audi">Audi</option>
+                        <option value="Nissan">Nissan</option>
+                        <option value="Toyota">Toyota</option>
+                        <option value="Volkswagen">Volkswagen</option>
+                        <option value="Tata">Tata</option>
+                        <option value="Land Rover">Land Rover</option>
+                        <option value="Mitsubishi">Mitsubishi</option>
+                        <option value="Renault">Renault</option>
+                        <option value="Mercedes-Benz">Mercedes-Benz</option>
+                        <option value="BMW">BMW</option>
+                        <option value="Mahindra">Mahindra</option>
+                        <option value="Ford">Ford</option>
+                        <option value="Porsche">Porsche</option>
+                        <option value="Datsun">Datsun</option>
+                        <option value="Jaguar">Jaguar</option>
+                        <option value="Volvo">Volvo</option>
+                        <option value="Chevrolet">Chevrolet</option>
+                        <option value="Skoda">Skoda</option>
+                        <option value="Mini">Mini</option>
+                        <option value="Fiat">Fiat</option>
+                        <option value="Jeep">Jeep</option>
+                        <option value="Smart">Smart</option>
+                        <option value="Ambassador">Ambassador</option>
+                        <option value="Isuzu">Isuzu</option>
+                        <option value="ISUZU">ISUZU</option>
+                        <option value="Force">Force</option>
+                        <option value="Bentley">Bentley</option>
+                        <option value="Lamborghini">Lamborghini</option>
+                    </select>
+
+                    <select name="model" id="modelSelect" required>
+                        <option value="">Select Model</option>
+                    </select>
+
+                    <input type="number" name="km_driven" placeholder="Kilometers Driven" required>
+                    <select name="fuel_type" required>
+                        <option value="">Fuel Type</option>
+                        <option value="petrol">Petrol</option>
+                        <option value="diesel">Diesel</option>
+                        <option value="electric">Electric</option>
+                    </select>
+
+                    <input type="number" name="engine" placeholder="Engine Capacity (CC)" required>
+                    <input type="number" name="power" placeholder="Power (BHP)" required>
+
+                    <select name="transmission" required>
+                        <option value="">Transmission</option>
+                        <option value="automatic">Automatic</option>
+                        <option value="manual">Manual</option>
+                    </select>
+                    <select name="owner_type" required>
+                        <option value="">Owner Type</option>
+                        <option value="first">First Owner</option>
+                        <option value="second">Second Owner</option>
+                        <option value="third">Third Owner</option>
+                    </select>
+
+                    <input type="number" name="mileage" placeholder="Mileage (km/L)" required>
+                    <input type="number" name="year" placeholder="Year" required>
+
+                    <button type="submit">CALCULATE VALUE</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="loading" id="loading" style="display: none;">Loading car quote...</div>
+        
+    </main>
+   
+    
+    <script>
+
+
+car_models = {
+    'Maruti': ['Swift', 'Swift Dzire', 'Wagon R', 'Alto K10', 'Ertiga ZDI', 'Baleno', 'Vitara Brezza', 
+               'Celerio', 'S-Presso', 'Ignis', 'Ritz', 'Zen Estilo', 'SX4', 'A-Star', 'Grand Vitara', 
+               'Omni', 'Eeco', 'XL6', 'Ciaz', 'Jimny'],
+    
+    'Hyundai': ['Creta', 'Venue', 'i20', 'Grand i10 Nios', 'Verna', 'Tucson', 'Alcazar', 'Kona Electric', 
+                'Elantra', 'Santro', 'Xcent', 'Aura', 'Accent', 'Getz', 'Sonata', 'i30', 'Palisade', 
+                'Genesis', 'Ioniq 5', 'Santa Fe'],
+    
+    'Honda': ['City', 'Civic', 'Accord', 'Jazz', 'Amaze', 'CR-V', 'WR-V', 'BR-V', 'Mobilio', 'Brio', 
+              'HR-V', 'Pilot', 'Odyssey', 'NSX', 'Fit', 'Freed', 'Stepwgn', 'Inspire', 'Legend', 'Elysion'],
+    
+    'Audi': ['A3', 'A4', 'A6', 'A8', 'Q2', 'Q3', 'Q5', 'Q7', 'Q8', 'S5 Sportback', 'RS5', 'RS7', 'R8', 
+             'E-Tron', 'A1', 'A5 Sportback', 'TT Coupe', 'SQ7', 'Q4 Sportback', 'RS Q8'],
+    
+    'Nissan': ['Micra', 'Sunny', 'X-Trail', 'Terrano', 'Evalia', 'Magnite', 'Kicks', 'Juke', 'Patrol', 
+               'Navara', 'Murano', 'Altima', 'Sentra', 'Maxima', 'Leaf', 'Rogue', 'Armada', 'GT-R', 
+               '370Z', 'Versa'],
+    
+    'Toyota': ['Innova Crysta', 'Fortuner', 'Corolla Altis', 'Camry', 'Yaris', 'Etios', 'Glanza', 
+               'Urban Cruiser', 'Hilux', 'Land Cruiser', 'Prius', 'Vellfire', 'Alphard', 'C-HR', 'Supra', 
+               'Avanza', 'Rush', 'Sienna', 'Sequoia', 'Tundra'],
+    
+    'Volkswagen': ['Polo', 'Vento', 'Jetta', 'Passat', 'Tiguan', 'Taigun', 'T-Roc', 'Golf', 'Beetle', 
+                   'Atlas', 'Arteon', 'ID.4', 'Up!', 'Scirocco', 'Touareg', 'Amarok', 'Fox', 'Phaeton', 
+                   'Virtus', 'Teramont'],
+    
+    'Tata': ['Safari Storme', 'Harrier', 'Nexon', 'Tiago', 'Tigor', 'Altroz', 'Punch', 'Zest', 'Bolt', 
+             'Nano', 'Hexa', 'Sumo', 'Aria', 'Sierra', 'Indigo', 'Indica Vista', 'Manza', 'Safari', 
+             'Xenon', 'Ace'],
+    
+    'Land Rover': ['Range Rover Evoque', 'Range Rover Sport', 'Range Rover Velar', 'Range Rover Autobiography', 
+                   'Discovery', 'Discovery Sport', 'Defender 90', 'Defender 110', 'Freelander', 
+                   'Range Rover Classic', 'Evoque Convertible', 'Range Rover SVR', 'LR3', 'LR4', 
+                   'Defender Hard Top', 'Defender X-Dynamic', 'Range Rover Westminster', 'Defender V8', 
+                   'Range Rover Vogue', 'Range Rover First Edition'],
+    
+    'Mitsubishi': ['Pajero Sport', 'Outlander', 'Montero', 'Lancer', 'ASX', 'Mirage', 'Eclipse Cross', 
+                   'Xpander', 'Colt', 'Grandis', 'Galant', 'Delica', 'Triton', 'Evolution X', 'GTO', 
+                   'Space Star', 'Diamante', 'Sigma', 'Starion', 'Carisma'],
+    
+    'Renault': ['Duster', 'Kwid', 'Triber', 'Kiger', 'Koleos', 'Fluence', 'Scala', 'Lodgy', 'Captur', 
+                'Pulse', 'Arkana', 'Megane', 'Zoe', 'Talisman', 'Espace', 'Kangoo', 'Clio', 'Sandero', 
+                'Scenic', 'Alaskan'],
+    
+    'Mercedes-Benz': ['A-Class', 'B-Class', 'C-Class', 'E-Class', 'S-Class', 'GLA', 'GLB', 'GLC', 'GLE', 
+                      'GLS', 'G-Wagon (G-Class)', 'CLA', 'AMG GT', 'Maybach S-Class', 'EQA', 'EQB', 
+                      'EQC', 'SLR McLaren', 'SL-Class', 'Sprinter'],
+    
+    'BMW': ['3 Series', '5 Series', '7 Series', 'X1', 'X3', 'X5', 'X7', 'M3', 'M4', 'M5', 'Z4', 'i3', 
+            'i4', 'i8', 'XM', 'Gran Coupe', '530e', '330e', '745e', 'X6'],
+    
+    'Mahindra': ['Scorpio', 'XUV700', 'XUV500', 'Thar', 'Bolero', 'KUV100', 'TUV300', 'Marazzo', 'Alturas G4', 
+                 'Verito', 'eVerito', 'Quanto', 'Xylo', 'Genio', 'Commander', 'Maxximo', 'Supro', 
+                 'NuvoSport', 'Armada', 'Roxor'],
+    
+    'Ford': ['EcoSport', 'Endeavour', 'Figo', 'Aspire', 'Freestyle', 'Fiesta', 'Focus', 'Mustang', 'Ranger', 
+             'Kuga', 'Edge', 'Explorer', 'Escape', 'Everest', 'Mondeo', 'Galaxy', 'Ka', 'Transit', 
+             'Bronco', 'Puma'],
+    
+    'Porsche': ['911', 'Cayenne', 'Macan', 'Panamera', 'Taycan', '718 Boxster', '718 Cayman', 'Cayenne Coupe', 
+                'Carrera GT', '918 Spyder', 'Turbo S', 'GT3', 'GT2 RS', 'GTS', 'Cayman S', 'Boxster S', 
+                'Targa 4S', 'Panamera Turbo', 'Macan S', 'Taycan Turbo'],
+               
+                'Datsun': ['Go', 'Go+', 'Redi-Go', 'Mi-Do', 'On-Do', '240Z', '260Z', '280Z', 'Fairlady Z', 
+                        'Bluebird', 'Sunny', 'Cherry', 'Violet', 'Stanza', 'Laurel', 'Cedric', 'Skyline', 
+                        'Silvia', 'Roadster', 'Sunny Truck'],
+                
+                'Jaguar': ['XE', 'XF', 'XJ', 'F-Pace', 'E-Pace', 'F-Type', 'I-Pace', 'XK', 'XKR', 'S-Type', 
+                        'X-Type', 'Mark 2', 'XJ220', 'D-Type', 'C-Type', 'F-Type Convertible', 'E-Type', 
+                        'I-Pace Black Edition', 'F-Pace SVR', 'Project 8'],
+                
+                'Volvo': ['XC40', 'XC60', 'XC90', 'S60', 'S90', 'V60', 'V90', 'C40 Recharge', 'EX90', 'V40', 
+                        '850', '940', '960', 'Amazon', 'P1800', 'Polestar 1', 'Polestar 2', 'S40', 'C70', 
+                        'V70'],
+                
+                'Chevrolet': ['Beat LT', 'Cruze LTZ', 'Spark 1.0', 'Tavera LT', 'Sail', 'Aveo', 'Trailblazer', 
+                        'Enjoy', 'Captiva', 'Optra', 'Corvette', 'Camaro', 'Impala', 'Malibu', 'Silverado', 
+                        'Equinox', 'Traverse', 'Tahoe', 'Suburban', 'Blazer'],
+                
+                'Skoda': ['Rapid', 'Superb', 'Octavia', 'Kushaq', 'Kodiaq', 'Fabia', 'Scala', 'Enyaq iV', 'Kamiq', 
+                        'Citigo', 'Yeti', 'Roomster', 'Laura', 'Slavia', 'Felicia', 'Favorit', 'Superb Estate', 
+                        'Octavia RS', 'Karoq', 'Vision X'],
+                
+                'Mini': ['Cooper', 'Cooper S', 'John Cooper Works', 'Countryman', 'Clubman', 'Convertible', 
+                        'Paceman', 'Roadster', 'Coupe', 'One', 'Cooper SE', 'Cooper D', 'Clubvan', 'Countryman SE', 
+                        'GP', 'Cabrio', 'Hatch', 'John Cooper Works GP', 'Aceman', 'Rocketman'],
+                
+                'Fiat': ['Punto', 'Linea', '500', 'Palio', 'Uno', 'Siena', 'Cronos', 'Tipo', 'Panda', 'Multipla', 
+                        'Bravo', 'Strada', 'Doblo', 'Fiorino', '124 Spider', '500X', '500L', 'Idea', 'Qubo', 
+                        'Mobi'],
+                
+                'Jeep': ['Compass', 'Wrangler', 'Grand Cherokee', 'Renegade', 'Gladiator', 'Patriot', 'Liberty', 
+                        'Commander', 'Cherokee', 'Wagoneer', 'Grand Wagoneer', 'Trailhawk', 'Scrambler', 'CJ5', 
+                        'CJ7', 'Wrangler Unlimited', 'Avenger', 'Cherokee XJ', 'Rubicon', 'Willys'],
+                
+                'Smart': ['Fortwo', 'Forfour', 'EQ Fortwo', 'EQ Forfour', 'Fortwo Cabrio', 'Brabus Fortwo', 
+                        'Brabus Forfour', 'Roadster Coupe', 'Crossblade', 'Smart #1', 'Smart #3', 'City-Coupe', 
+                        'Forfun2', 'eScooter', 'Smart Vision EQ', 'Cabrio Pulse', 'Cabrio Passion', 'Pure Coupe', 
+                        'Forfour Passion', 'Forfour Pulse'],
+                
+                'Ambassador': ['Mark I', 'Mark II', 'Mark III', 'Mark IV', 'Avigo', 'Grand', 'Nova', 'Classic', 
+                        'ISZ', 'HM Veer', 'HM Contessa', 'HM Trekker', 'HM Pushpak', 'HM Porter', 'HM Mini', 
+                        'Ambassador Classic', 'Ambassador Avigo', 'Ambassador Nova', 'Ambassador Grand', 
+                        'Ambassador Diesel'],
+                
+                'Isuzu': ['D-Max V-Cross', 'MU-X', 'D-Max S-Cab', 'Hi-Lander', 'MU-7', 'Trooper', 'VehiCROSS', 
+                        'Fargo', 'Elf', 'Giga', 'Como', 'Wizard', 'Rodeo', 'Impulse', 'Ascender', 'Bighorn', 
+                        'Fuego', 'Piazza', 'Gemini', 'Bellett'],
+                
+                'ISUZU': ['D-Max V-Cross', 'MU-X', 'D-Max S-Cab', 'Hi-Lander', 'MU-7', 'Trooper', 'VehiCROSS', 
+                        'Fargo', 'Elf', 'Giga', 'Como', 'Wizard', 'Rodeo', 'Impulse', 'Ascender', 'Bighorn', 
+                        'Fuego', 'Piazza', 'Gemini', 'Bellett'],
+                
+                'Force': ['Gurkha', 'Traveller', 'Trax Cruiser', 'Trax Toofan', 'Trax Kargo King', 'Trax Gama', 
+                        'Force One', 'Trump', 'Gurkha Xtreme', 'Traveller Smart Citibus', 'Urbania', 'Shaktiman', 
+                        'Tempo', 'Matador', 'Judo', 'Toofan Deluxe', 'Trax Ambulance', 'Trax Deluxe', 
+                        'Traveller Super', 'Traveller Royale'],
+                
+                'Bentley': ['Continental GT', 'Flying Spur', 'Bentayga', 'Mulsanne', 'Azure', 'Brooklands', 
+                        'Arnage', 'Turbo R', 'Eight', 'S1', 'S2', 'S3', 'Continental GTC', 'Speed Six', 
+                        'Mark VI', 'R Type', 'T Series', 'Bentley State Limousine', 'Bentayga Hybrid', 
+                        'EXP 100 GT'],
+                
+                'Lamborghini': ['Huracán', 'Aventador', 'Urus', 'Gallardo', 'Veneno', 'Sesto Elemento', 'Reventón', 
+                                'Diablo', 'Murciélago', 'Countach', 'Miura', 'Espada', 'LM002', 'Islero', 'Jarama', 
+                                'Centenario', 'Huracán Evo', 'Aventador SVJ', 'Urus Performante', 'Revuelto']
+        }
+        
+
+   
+
+// Select elements
+const companySelect = document.querySelector('select[name="company"]');
+const modelSelect = document.getElementById('modelSelect');
+
+// Event listener for company selection
+companySelect.addEventListener('change', () => {
+    const selectedCompany = companySelect.value;
+    console.log('Selected Company:', selectedCompany); // Add this for debugging
+
+    modelSelect.innerHTML = '<option value="">Select Model</option>'; // Clear existing models
+
+    if (selectedCompany && car_models[selectedCompany]) {
+        car_models[selectedCompany].forEach(model => {
+            const option = document.createElement('option');
+            option.value = model;
+            option.textContent = model;
+            modelSelect.appendChild(option);
+        });
+    }
+});
+
+        function openMap() {
+            const address = "22.9813819, 72.6316573";
+            const encodedAddress = encodeURIComponent(address);
+            window.open(`https://www.google.com/maps/search/?api=1&query=${encodedAddress}`, '_blank');
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('formModal');
+            const loading = document.getElementById('loading');
+            const startBtn = document.querySelector('.start-btn');
+            const closeBtn = document.querySelector('.close-btn');
+            const quotes = [
+                    "Love what you do.",
+                    "Happiness leads to success.",
+                    "Believe, and you're halfway there.",
+                    "Passion follows courage.",
+                    "Dreams shape the future.",
+                    "Keep going, don’t watch the clock.",
+                    "Take the shot.",
+                    "Energy comes from passion.",
+                    "Never stop moving.",
+                    "Growth is beyond comfort.",
+                    "Hardships build destiny.",
+                    "Finish, not when tired, but when done.",
+                    "Doubts limit tomorrow.",
+                    "Dream big, fail forward.",
+                    "Growth is the real reward.",
+                    "Success starts with belief.",
+                    "The only limit is the one you set yourself.",
+                    "Perseverance leads to greatness.",
+                    "Your attitude determines your direction.",
+                    "Every step forward counts.",
+                    "Challenges are opportunities in disguise.",
+                    "The harder you work, the luckier you get.",
+                    "Failure is not the opposite of success, it's part of it.",
+                    "Dreams become reality through action.",
+                    "You are capable of more than you know.",
+                    "The best time for new beginnings is now.",
+                    "Every setback is a setup for a comeback.",
+                    "Stay positive, work hard, make it happen.",
+                    "Success is the sum of small efforts repeated daily."
+
+        ];
+            startBtn.addEventListener('click', () => {
+                loading.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                    modal.classList.add('active');
+                }, 3333 );
+            });
+        
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+            startBtn.addEventListener('click', () => {
+                // Display one random quote immediately
+                const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+                loading.textContent = randomQuote;
+                loading.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+        
+                // After 3 seconds, hide loading and show modal
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'auto';
+                }, 3333);
+            });
+        });
+        document.getElementById('valuationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Show loading screen
+            
+            
+            // Get form data
+            const form = e.target;
+            const formData = {
+                company: form.company.value,
+                km_driven: form.km_driven.value,
+                fuel_type: form.fuel_type.value,
+                transmission: form.transmission.value,
+                owner_type: form.owner_type.value,
+                mileage: form.mileage.value,
+                engine: form.engine.value,
+                power: form.power.value,
+                year: form.year.value
+            };
+            
+            try {
+                // Send data to server
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show result in modal
+                    const modalContent = document.querySelector('.modal-content');
+                    modalContent.innerHTML = `
+                        <div class="modal-header">
+                            <h4>ESTIMATED VALUE</h4>
+                            <button class="close-btn" onclick="closeModal()">✕</button>
+                        </div>
+                        <div style="text-align: center; padding: 2rem;">
+                            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">
+                                ₹${result.predicted_price} Lakhs
+                            </h2>
+                            <p style="opacity: 0.7;">
+                                This is an estimated market value based on our analysis
+                            </p>
+                        </div>
+                    `;
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Server error: ' + error.message);
+            } finally {
+                loading.style.display = 'none';
+            }
+        });
+        
+        function closeModal() {
+            document.getElementById('formModal').classList.remove('active');
+            window.location.reload(); // Refresh the page to reset the website
+
+        }
+    </script>
+</body>
+</html>
